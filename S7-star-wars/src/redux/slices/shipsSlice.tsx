@@ -3,25 +3,28 @@ import { Starship } from "../../interfaces/Starship";
 
 // Интерфейс для состояния
 interface ShipsState {
-    ships: Starship[]; 
+    ships: Starship[];
     status: "idle" | "loading" | "success" | "error"; // Статус загрузки
+    nextUrl: string | null; // URL для следующей страницы
 }
 
 // Начальное состояние
 const initialState: ShipsState = {
-    ships: [], 
-    status: "idle", 
+    ships: [],
+    status: "idle",
+    nextUrl: "https://swapi.dev/api/starships/", // Начальный URL
 };
 
-export const fetchShips = createAsyncThunk<Starship[]>(
+// Асинхронное действие для загрузки данных
+export const fetchShips = createAsyncThunk(
     "ships/fetchShips",
-    async () => {
-        const response = await fetch("https://swapi.dev/api/starships/");
+    async (url: string) => {
+        const response = await fetch(url);
         if (!response.ok) {
             throw new Error("Failed to fetch starships");
         }
         const data = await response.json();
-        return data.results; // Возвращаем массив данных о звездолётах
+        return data; // Возвращаем весь объект API (results и next)
     }
 );
 
@@ -44,10 +47,14 @@ const shipsSlice = createSlice({
             .addCase(fetchShips.pending, (state) => {
                 state.status = "loading"; // Меняем статус на "загрузка"
             })
-            .addCase(fetchShips.fulfilled, (state, action: PayloadAction<Starship[]>) => {
-                state.status = "success"; // Меняем статус на "успех"
-                state.ships = action.payload; // Заполняем массив звездолётов
-            })
+            .addCase(
+                fetchShips.fulfilled,
+                (state, action: PayloadAction<{ results: Starship[]; next: string | null }>) => {
+                    state.status = "success"; // Меняем статус на "успех"
+                    state.ships = [...state.ships, ...action.payload.results]; // Добавляем новые корабли
+                    state.nextUrl = action.payload.next; // Обновляем nextUrl
+                }
+            )
             .addCase(fetchShips.rejected, (state) => {
                 state.status = "error"; // Меняем статус на "ошибка"
             });
