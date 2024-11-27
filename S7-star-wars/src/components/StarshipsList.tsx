@@ -15,18 +15,18 @@ const StarshipsList = () => {
     }, [dispatch]);
 
     return (
-        <div>
-            <h1>Starships</h1>
-            {/* Отображаем статус загрузки */}
-            {status === "loading" && <p>Loading...</p>}
-            {status === "error" && <p>Error loading starships!</p>}
-            {status === "success" && ships.length === 0 && <p>No starships found!</p>}
-            {/* Отображаем список кораблей */}
+        <div className="bg-gray-900 flex flex-col mx-auto max-w-4xl p-4 text-gray-200 ">
+            {status === "loading" && <p className="text-center text-gray-400">Loading...</p>}
+            {status === "error" && <p className="text-center text-red-500">Error loading starships!</p>}
+            {status === "success" && ships.length === 0 && <p className="text-center text-gray-400">No starships found!</p>}
             {status === "success" && (
-                <ul>
+                <ul className="space-y-4">
                     {ships.map((ship, index) => (
-                        <li key={index}>
-                            {ship.name} ({ship.model})
+                        <li key={index} 
+                        className="bg-gray-800 border border-gray-700 rounded-lg p-4 hover:bg-gray-700"
+                        >
+                            <h3 className="text-lg font-bold">{ship.name}</h3>
+                            <p className="text-gray-400">{ship.model}</p>
                         </li>
                     ))}
                 </ul>
