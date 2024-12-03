@@ -8,4 +8,5 @@ export interface Starship {
     passengers: string;
     max_atmosphering_speed: string;
     cargo_capacity: string;
+    url: string; 
 }

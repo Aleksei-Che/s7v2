@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../redux/store";
 import { fetchShips } from "../redux/slices/shipsSlice";
-import ViewMoreButton from "../components/buttons/ViewMoreButton";
+import { Link } from "react-router-dom";
 
 const StarshipsList = () => {
     const ships = useSelector((state: RootState) => state.ships.ships);
@@ -14,7 +14,7 @@ const StarshipsList = () => {
 
     useEffect(() => {
         if (nextUrl && ships.length === 0) {
-            dispatch(fetchShips(nextUrl)); // Передаём URL в fetchShips
+            dispatch(fetchShips(nextUrl));
         }
     }, [dispatch, nextUrl, ships.length]);
 
@@ -28,8 +28,8 @@ const StarshipsList = () => {
                 throw new Error("Failed to fetch next page of starships");
             }
             const data = await response.json();
-            dispatch(fetchShips(nextUrl)); // Загружаем следующую страницу через Thunk
-            setNextUrl(data.next || null); // Обновляем nextUrl
+            dispatch(fetchShips(nextUrl));
+            setNextUrl(data.next || null);
         } catch (error) {
             console.error("Error fetching more starships:", error);
         } finally {
@@ -44,24 +44,39 @@ const StarshipsList = () => {
             {status === "success" && ships.length === 0 && (
                 <p className="text-center text-gray-400">No starships found!</p>
             )}
-            {status === "success" && (
-                <ul className="space-y-4">
-                    {ships.map((ship, index) => (
-                        <li
-                            key={index}
-                            className="bg-gray-800 border border-gray-700 rounded-lg p-4 hover:bg-gray-700"
-                        >
-                            <h3 className="text-lg font-bold">{ship.name}</h3>
-                            <p className="text-gray-400">{ship.model}</p>
-                        </li>
-                    ))}
-                </ul>
+            {status === "success" && ships.length > 0 && (
+                <>
+                    <h2 className="text-2xl font-bold mb-4">Starships</h2>
+                    <ul className="space-y-4">
+                        {ships.map((ship) => {
+                            const id = ship.url.split("/").slice(-2, -1)[0];
+                            return (
+                                <li
+                                    key={id}
+                                    className="bg-gray-800 border border-gray-700 rounded-lg p-4 hover:bg-gray-700"
+                                >
+                                    <Link
+                                        to={`/starships/${id}`}
+                                        className="text-lg font-bold text-white hover:underline cursor-pointer"
+                                    >
+                                        {ship.name}
+                                    </Link>
+                                    <p className="text-gray-400">{ship.model}</p>
+                                </li>
+                            );
+                        })}
+                    </ul>
+                </>
             )}
-            <ViewMoreButton
-                onClick={loadMoreShips}
-                loading={loadingMore}
-                hasMore={!!nextUrl}
-            />
+            {nextUrl && (
+                <button
+                    onClick={loadMoreShips}
+                    className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                    disabled={loadingMore}
+                >
+                    {loadingMore ? "Loading more..." : "Load More"}
+                </button>
+            )}
         </div>
     );
 };

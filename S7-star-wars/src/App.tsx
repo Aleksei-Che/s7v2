@@ -1,16 +1,27 @@
-import Header from './components/Header'
-import StarshipsList from './components/StarshipsList'
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Header from './components/Header';
+import Home from './pages/home';
+import StarshipDetailPage from './pages/StrarshipDetailPage';
+import StarshipsPage from './pages/StarshipsPage';
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
 import './App.css'
 
-function App() {
+const App = () => {
   return (
-    <div>
-      <Header />
-      <h1 className='text-blue-800'>Star Wars App</h1>
-      <StarshipsList />
-     
-    </div>
-  )
-}
+      <Router>
+          <Header />
+          <main className="bg-gray-900 text-gray-200 min-h-screen">
+              <Routes>
+                  <Route path="/" element={<Home />} /> 
+                  <Route path="/starships" element={<StarshipsPage />} /> 
+                  <Route path="/starships/:id" element={<StarshipDetailPage />} /> 
+                  <Route path="/login" element={<LoginPage />} />
+                  <Route path="/register" element={<RegisterPage />} />
+              </Routes>
+          </main>
+      </Router>
+  );
+};
 
 export default App;
