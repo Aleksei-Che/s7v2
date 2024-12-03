@@ -1,34 +1,44 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import { Starship } from "../interfaces/Starship";
 
-const StarshipDetail = () => {
-    const {id} = useParams<{id: string}>();
+// Типизация пропсов
+interface StarshipDetailProps {
+    starshipId: string | undefined;
+}
+
+const StarshipDetail: React.FC<StarshipDetailProps> = ({ starshipId }) => {
     const [starship, setStarship] = useState<Starship | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [imageError, setImageError] = useState<boolean>(false);
-    
-    useEffect (()=> {
+
+    useEffect(() => {
         const fetchStarship = async () => {
+            if (!starshipId) {
+                setError("No starship ID provided");
+                setLoading(false);
+                return;
+            }
+
             try {
                 setLoading(true);
-                const response = await fetch(`https://swapi.dev/api/starships/${id}/`);
-                if(!response.ok) {
-                    throw new Error("Failed to fetch starship data")
+                const response = await fetch(`https://swapi.dev/api/starships/${starshipId}/`);
+                if (!response.ok) {
+                    throw new Error("Failed to fetch starship data");
                 }
                 const data = await response.json();
-                setStarship(data);
+                setStarship(data); // Устанавливаем данные о корабле
             } catch (error: any) {
-                setError(error.message);
+                setError(error.message || "An error occurred");
             } finally {
                 setLoading(false);
             }
         };
-        fetchStarship();
-    }, [id]);
 
-    const imageUrl = `https://starwars-visualguide.com/assets/img/starships/${id}.jpg`;
+        fetchStarship();
+    }, [starshipId]);
+
+    const imageUrl = `https://starwars-visualguide.com/assets/img/starships/${starshipId}.jpg`;
 
     return (
         <div className="max-w-4xl mx-auto p-6 bg-gray-900 text-gray-200 rounded-lg">
@@ -51,6 +61,8 @@ const StarshipDetail = () => {
                             />
                         )}
                     </div>
+
+                    {/* Информация о корабле */}
                     <div className="w-full md:w-1/2">
                         <h2 className="text-3xl font-bold mb-4">{starship.name}</h2>
                         <p className="text-gray-400 mb-2">
@@ -77,7 +89,6 @@ const StarshipDetail = () => {
             )}
         </div>
     );
-
 };
 
 export default StarshipDetail;
