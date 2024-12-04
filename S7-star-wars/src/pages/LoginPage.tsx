@@ -1,19 +1,23 @@
 import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import {auth} from "../firebaseConfig";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
+
 
 const LoginPage = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
+    const location = useLocation();
+
+    const from = location.state?.from?.pathname || "/";
 
     const handleLogin = async () => {
         try {
             await signInWithEmailAndPassword(auth, email, password);
             alert("Login successful!");
-            navigate("/");
+            navigate(from);
         } catch (error: any) {
             setError(error.message)
         }
@@ -43,6 +47,15 @@ const LoginPage = () => {
             >
                 Login
             </button>
+
+            <p className="text-gray-400 mt-4">
+                Don't have an account?{""}
+                <Link to="/register" className="text-blue-500  hover:underline"> Register here </Link>
+            </p>
+
+
+
+
         </div>
     );
 };
