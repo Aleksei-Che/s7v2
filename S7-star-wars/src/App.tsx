@@ -5,6 +5,7 @@ import StarshipDetailPage from './pages/StrarshipDetailPage';
 import StarshipsPage from './pages/StarshipsPage';
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import ProtectedRoute from "./components/ProtectedRoute";
 import './App.css'
 
 const App = () => {
@@ -14,10 +15,13 @@ const App = () => {
           <main className="bg-gray-900 text-gray-200 min-h-screen">
               <Routes>
                   <Route path="/" element={<Home />} /> 
-                  <Route path="/starships" element={<StarshipsPage />} /> 
-                  <Route path="/starships/:id" element={<StarshipDetailPage />} /> 
                   <Route path="/login" element={<LoginPage />} />
                   <Route path="/register" element={<RegisterPage />} />
+
+                  <Route element={<ProtectedRoute />}>
+                        <Route path="/starships" element={<StarshipsPage />} /> 
+                        <Route path="/starships/:id" element={<StarshipDetailPage />} /> 
+                  </Route>
               </Routes>
           </main>
       </Router>
