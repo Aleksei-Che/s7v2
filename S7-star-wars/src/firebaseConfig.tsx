@@ -2,7 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-    apiKey: "***REMOVED***",
+    apiKey: "AIzaSyAxjd1qVH32ipQg-fuKBRMcTr8HSl_lyZI",
     authDomain: "s7-star-wars-74840.firebaseapp.com",
     projectId: "s7-star-wars-74840",
     storageBucket: "s7-star-wars-74840.firebasestorage.app",
