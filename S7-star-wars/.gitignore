@@ -27,3 +27,8 @@ dist-ssr
 
 .env
 
+.DS_Store
+backup-repo/
+s7v2.git.bfg-report/
+s7v2.git/
+
