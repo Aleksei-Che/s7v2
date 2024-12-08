@@ -1,61 +1,122 @@
 import img from "../assets/img/image.png";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { onAuthStateChanged, signOut, User } from "firebase/auth";
 import { auth } from "../firebaseConfig";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faFacebook,
+  faInstagram,
+  faTwitter,
+  faYoutube,
+} from "@fortawesome/free-brands-svg-icons";
+import Accordion from "./Accordion";
 import Navbar from "./Navbar";
 
 const Header = () => {
-    const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
 
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            setUser(currentUser);
-        });
-        return () => unsubscribe();
-    }, []);
+  const handleLogout = async () => {
+    await signOut(auth);
+    alert("Logged out!");
+  };
 
-    const handleLogout = async () => {
-        await signOut(auth);
-        alert("Logged out!");
-    };
-    return (
-        <header className="bg-gray-900 text-gray-200">
-            <div className="py-4 px-6 flex relative">
-                <div className="absolute left-0 top-0">
-                    <span className="block text-sm text-gray-400">Social Icons</span>
-                </div>
-                <div className="mx-auto">
-                    <Link to="/"><img src={img} alt="Star Wars Logo" className="h-12 w-auto" />
-                    </Link>
-                </div>
-                <div className="absolute right-0 top-1/2 -translate-y-1/2 flex mr-6">
-    {!user ? (
-        <>
-            <Link to="/login" className="text-sm text-gray-400 hover:text-white mr-4">
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  return (
+    <header className="bg-gray-900 text-gray-200">
+      <div className="py-4 px-6 flex relative">
+        {/* Соцсети */}
+        <div className="hidden md:flex space-x-4 absolute left-2 top-2">
+          <a
+            href="https://www.facebook.com/starwars.es"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white hover:text-gray-400"
+          >
+            <FontAwesomeIcon icon={faFacebook} size="lg" />
+          </a>
+          <a
+            href="https://www.instagram.com/starwars/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white hover:text-gray-400"
+          >
+            <FontAwesomeIcon icon={faInstagram} size="lg" />
+          </a>
+          <a
+            href="https://twitter.com/starwars"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white hover:text-gray-400"
+          >
+            <FontAwesomeIcon icon={faTwitter} size="lg" />
+          </a>
+          <a
+            href="https://www.youtube.com/@StarWars"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white hover:text-gray-400"
+          >
+            <FontAwesomeIcon icon={faYoutube} size="lg" />
+          </a>
+        </div>
+
+        <div className="mx-auto">
+          <Link to="/">
+            <img src={img} alt="Star Wars Logo" className="h-12 w-auto" />
+          </Link>
+        </div>
+
+        <div className="hidden md:flex absolute right-2 top-2 space-x-4">
+          {!user ? (
+            <>
+              <Link
+                to="/login"
+                className="text-sm text-gray-400 hover:text-white"
+              >
                 Log In
-            </Link>
-            <Link to="/register" className="text-sm text-gray-400 hover:text-white">
+              </Link>
+              <Link
+                to="/register"
+                className="text-sm text-gray-400 hover:text-white"
+              >
                 Sign Up
-            </Link>
-        </>
-    ) : (
-        <>
-            <span className="text-sm text-gray-400 mr-4">Welcome, {user.email}</span>
-            <button
+              </Link>
+            </>
+          ) : (
+            <>
+              <span className="text-sm text-gray-400">
+                Welcome, {user?.email ?? "User"}
+              </span>
+              <button
                 onClick={handleLogout}
                 className="text-sm text-gray-400 hover:text-white"
-            >
+              >
                 Log Out
-            </button>
-        </>
-    )}
-</div>
+              </button>
+            </>
+          )}
+        </div>
+      </div>
 
-            </div>
-            <Navbar />
-        </header>
-    );
+      <div className="md:hidden">
+        <Accordion
+          user={user ? { email: user.email } : null}
+          handleLogout={handleLogout}
+        />
+      </div>
+      <div className="hidden md:block">
+        <Navbar />
+      </div>
+    </header>
+  );
+  
 };
 
 export default Header;
