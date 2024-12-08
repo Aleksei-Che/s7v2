@@ -7,9 +7,9 @@ This project is an interactive web application that allows users to explore the 
 
 <div style="display: flex; overflow-x: auto; gap: 16px; padding: 16px; border: 1px solid #ddd; border-radius: 8px;">
 
-  <img src="S7-star-wars/public/readme-img/captura1.png" alt="Image 1" style="width: 300px; height: auto; border-radius: 8px;" />
-  <img src="S7-star-wars/public/readme-img/captura2.png" alt="Image 2" style="width: 300px; height: auto; border-radius: 8px;" />
-  <img src="S7-star-wars/public/readme-img/captura3.png" alt="Image 3" style="width: 300px; height: auto; border-radius: 8px;" />
+  <img src=".././S7-star-wars/public/readme-img/captura1.png" alt="Image 1" style="width: 300px; height: auto; border-radius: 8px;" />
+  <img src=".././S7-star-wars/public/readme-img/captura2.png" alt="Image 2" style="width: 300px; height: auto; border-radius: 8px;" />
+  <img src=".././S7-star-wars/public/readme-img/captura3.png" alt="Image 3" style="width: 300px; height: auto; border-radius: 8px;" />
   
 </div>
 
@@ -42,7 +42,8 @@ Follow these steps to set up and run the project locally:
 cd s7v2/S7-star-wars
 ```
 3. Install the dependencies:
-```npm install
+```bash
+npm install
 ```
 
 4. Create a .env file in the root directory and add your Firebase configuration:
